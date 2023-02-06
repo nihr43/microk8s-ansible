@@ -1,0 +1,57 @@
+---
+- name: install role packages
+  package:
+    name: snapd,iptables,kubernetes-client
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
+- name: install role packages
+  package: name=sudo,snapd,iptables
+  when: ansible_os_family == 'RedHat'
+
+- name: configure hosts
+  template:
+    src: hosts
+    dest: /etc/hosts
+
+- name: create link required for --classic confinement
+  ansible.builtin.file:
+    src: /var/lib/snapd/snap
+    dest: /snap
+    state: link
+  when: ansible_os_family == 'RedHat'
+
+- name: ensure snapd is running
+  service:
+    name: snapd
+    state: started
+    enabled: true
+
+- name: install microk8s
+  community.general.snap:
+    name: microk8s
+    channel: 1.26/stable
+    classic: true
+    state: present
+
+- name: land registry cert
+  copy:
+    src: certs/images.local.crt
+    dest: /etc/ssl/certs/images.local.crt
+  register: containerd
+
+- name: configure sysctls
+  template:
+    src: sysctls
+    dest: /etc/sysctl.d/k8s.conf
+  notify: reboot
+
+- name: create .kube
+  file:
+    path: /root/.kube
+    state: directory
+
+- name: create symlink for standard kubectl
+  ansible.builtin.file:
+    dest: /root/.kube/config
+    src: /var/snap/microk8s/current/credentials/client.config
+    state: link

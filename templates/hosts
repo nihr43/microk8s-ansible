@@ -1,0 +1,8 @@
+127.0.0.1	localhost
+
+{% for node in ansible_play_hosts_all %}
+{{ hostvars[node].inventory_hostname }} {{ hostvars[node].ansible_hostname }}
+{% endfor %}
+
+{{inventory_hostname}}	kubernetes.default
+{{registry_address}}	images.local

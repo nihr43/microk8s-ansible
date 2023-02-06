@@ -1,57 +1,63 @@
 ---
-- name: install role packages
-  package:
+- name: Install role packages
+  ansible.builtin.package:
     name: snapd,iptables,kubernetes-client
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
-- name: install role packages
-  package: name=sudo,snapd,iptables
+- name: Install role packages
+  ansible.builtin.package:
+    name: sudo,snapd,iptables
   when: ansible_os_family == 'RedHat'
 
-- name: configure hosts
-  template:
+- name: Configure hosts
+  ansible.builtin.template:
     src: hosts
     dest: /etc/hosts
+    mode: 0644
 
-- name: create link required for --classic confinement
+- name: Create link required for --classic confinement
   ansible.builtin.file:
     src: /var/lib/snapd/snap
     dest: /snap
     state: link
   when: ansible_os_family == 'RedHat'
 
-- name: ensure snapd is running
-  service:
+- name: Ensure snapd is running
+  ansible.builtin.service:
     name: snapd
     state: started
     enabled: true
 
-- name: install microk8s
+- name: Install microk8s
   community.general.snap:
     name: microk8s
     channel: 1.26/stable
     classic: true
     state: present
 
-- name: land registry cert
-  copy:
+- name: Land registry cert
+  ansible.builtin.copy:
     src: certs/images.local.crt
     dest: /etc/ssl/certs/images.local.crt
+    mode: 0644
   register: containerd
 
-- name: configure sysctls
-  template:
+- name: Configure sysctls
+  ansible.builtin.template:
     src: sysctls
     dest: /etc/sysctl.d/k8s.conf
+    mode: 0644
   notify: reboot
 
-- name: create .kube
-  file:
+- name: Create .kube
+  ansible.builtin.file:
     path: /root/.kube
     state: directory
+    mode: 0700
 
-- name: create symlink for standard kubectl
+- name: Create symlink for standard kubectl
   ansible.builtin.file:
     dest: /root/.kube/config
     src: /var/snap/microk8s/current/credentials/client.config
+    mode: 0600
     state: link

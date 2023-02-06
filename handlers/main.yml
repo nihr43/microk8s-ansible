@@ -1,4 +1,4 @@
 ---
-- name: reboot
-  reboot:
+- name: Reboot
+  ansible.builtin.reboot:
   listen: reboot

@@ -31,7 +31,7 @@
 - name: Install microk8s
   community.general.snap:
     name: microk8s
-    channel: 1.26/stable
+    channel: "{{microk8s_channel}}"
     classic: true
     state: present
 

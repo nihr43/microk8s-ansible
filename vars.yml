@@ -1,2 +1,3 @@
 ---
 registry_address: 10.152.183.2
+microk8s_channel: 1.24/stable

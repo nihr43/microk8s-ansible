@@ -46,6 +46,7 @@
     dest: /etc/ssl/certs/images.local.crt
     mode: 0644
   register: containerd
+  when: local_registry is defined
 
 - name: Configure sysctls
   ansible.builtin.template:

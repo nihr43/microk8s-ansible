@@ -1,1 +1,7 @@
 vm.max_map_count=262144
+
+# https://jsravn.com/2017/12/24/ipvs-with-kubernetes-ingress/
+net.ipv4.vs.sloppy_tcp=1
+net.ipv4.vs.schedule_icmp=1
+net.ipv4.vs.expire_nodest_conn=1
+net.ipv4.vs.conn_reuse_mode=2

@@ -42,7 +42,7 @@
 
 - name: Land registry cert
   ansible.builtin.copy:
-    src: certs/images.local.crt
+    src: images.local.crt
     dest: /etc/ssl/certs/images.local.crt
     mode: 0644
   register: containerd

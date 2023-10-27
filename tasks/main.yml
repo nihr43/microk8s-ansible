@@ -1,7 +1,7 @@
 ---
 - name: Install role packages
   ansible.builtin.package:
-    name: snapd,iptables,kubernetes-client
+    name: snapd,iptables,kubernetes-client,ipset,ipvsadm
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Install role packages
@@ -21,6 +21,11 @@
     dest: /snap
     state: link
   when: ansible_os_family == 'RedHat'
+
+- name: enable ipvs
+  ansible.builtin.lineinfile:
+    path: /etc/modules
+    line: ip_vs
 
 - name: Ensure snapd is running
   ansible.builtin.service:

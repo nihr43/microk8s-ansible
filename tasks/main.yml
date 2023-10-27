@@ -64,5 +64,5 @@
   ansible.builtin.file:
     dest: /root/.kube/config
     src: /var/snap/microk8s/current/credentials/client.config
-    mode: 0600
+    mode: 0660
     state: link

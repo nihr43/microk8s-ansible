@@ -14,6 +14,7 @@
     src: hosts
     dest: /etc/hosts
     mode: 0644
+  when: on_premises is defined
 
 - name: Create link required for --classic confinement
   ansible.builtin.file:
@@ -46,7 +47,7 @@
     dest: /etc/ssl/certs/images.local.crt
     mode: 0644
   register: containerd
-  when: local_registry is defined
+  when: on_premises is defined
 
 - name: Configure sysctls
   ansible.builtin.template:
